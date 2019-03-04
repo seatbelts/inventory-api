@@ -1,9 +1,8 @@
 import { Controller, Body, Post, Get } from '@nestjs/common';
 
 import { ItemsService } from './items.service';
-import { Item } from '../interfaces/items';
 
-import { CreateItemDto } from '../dto/create.items.dto';
+import { Item } from 'src/items/entities/item.entity';
 
 @Controller('items')
 export class ItemsController {
@@ -11,13 +10,13 @@ export class ItemsController {
     constructor(private itemsService: ItemsService) {}
 
     @Post()
-    async create(@Body() createItemDto: CreateItemDto) {
-        this.itemsService.create(createItemDto);
+    async create(@Body() createItem: Item) {
+        this.itemsService.create(createItem);
     }
 
     @Post('/batch')
-    async createBatch(@Body() createItemDtoArray: CreateItemDto[]) {
-        console.log(createItemDtoArray);
+    async createBatch(@Body() createItemArray: Item[]) {
+        this.itemsService.batchCreate(createItemArray);
     }
 
     @Get()
