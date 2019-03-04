@@ -1,30 +1,29 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { Item } from '../interfaces/items';
-import { CreateItemDto } from '../dto/create.items.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { Item } from 'src/items/entities/item.entity';
 
 @Injectable()
 export class ItemsService {
 
     constructor(
-        @Inject('ItemModelToken')
-        private readonly itemModel: Model<Item>,
+        @InjectRepository(Item)
+        private readonly itemRepository: Repository<Item>,
     ) {}
 
-    async create(createItemDto: CreateItemDto): Promise<Item> {
-        const createdItem = new this.itemModel(createItemDto);
-        return await createdItem.save();
+    async create(createItem): Promise<Item> {
+        return await this.itemRepository.save(createItem);
     }
 
-    async batchCreate(createItemDtoArray: CreateItemDto[]): Promise<Item[]> {
-        const createItemsPromise = await createItemDtoArray.map(createItemDto => {
-            const createdItem = new this.itemModel(createItemDto);
-            return createdItem.save();
+    async batchCreate(createItemArray): Promise<Item[]> {
+        const createItemsPromise = await createItemArray.map(createItem => {
+            return this.itemRepository.save(createItem);
         });
         return createItemsPromise;
     }
 
     async findAll(): Promise<Item[]> {
-    return await this.itemModel.find().exec();
+    return await this.itemRepository.find();
     }
 }
