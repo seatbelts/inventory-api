@@ -23,7 +23,21 @@ export class ItemsService {
         return createItemsPromise;
     }
 
+    async findById(id: number): Promise<Item> {
+        return await this.itemRepository.findOne(id);
+    }
+
     async findAll(): Promise<Item[]> {
-    return await this.itemRepository.find();
+        return await this.itemRepository.find();
+    }
+
+    async updateItem(itemId, updatedItem): Promise<Item> {
+        await this.itemRepository.update(itemId, updatedItem);
+        return this.findById(itemId);
+    }
+
+    async removeItem(itemId): Promise<any> {
+        await this.itemRepository.remove(itemId);
+        return await this.findAll();
     }
 }

@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get } from '@nestjs/common';
+import { Controller, Body, Post, Get, Delete, Param, Patch } from '@nestjs/common';
 
 import { ItemsService } from './items.service';
 
@@ -17,6 +17,16 @@ export class ItemsController {
     @Post('/batch')
     async createBatch(@Body() createItemArray: Item[]) {
         this.itemsService.batchCreate(createItemArray);
+    }
+
+    @Patch(':id')
+    async updateItem(@Param('id') id: string, @Body() updatedItem: Item) {
+        return this.itemsService.updateItem(id, updatedItem);
+    }
+
+    @Delete(':id')
+    async removeItem(@Param('id') itemId: string) {
+        return this.itemsService.removeItem({ id: itemId });
     }
 
     @Get()
